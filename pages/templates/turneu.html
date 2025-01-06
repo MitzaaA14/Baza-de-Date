@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<head>
+    <title>turneu</title>
+</head>
+<body>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+    <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-m5yy{background-color:#96fffb;border-color:#00d2cb;font-weight:bold;text-align:left;vertical-align:top}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
+    .center { text-align: center; }
+    </style>
+    <div class="center">
+        <a href="/" class="center">index</a>
+        <br><br><br>
+        <div style="margin-left: auto; margin-right: auto;">
+            <form name="filtreaza">
+                <input type="hidden" name="id" value="{{ getQueryParam "id" .Request }}" />
+                <input type="hidden" name="action" value="filter" />
+                <input type="text" style="width: 250px;" name="filter_count_bilete" placeholder="bilete vandute (foloseste >, >=, < sau =<)" value="{{ getQueryParam "filter_count_bilete" .Request }}"><br>
+                <button type="submit">filtreaza</button>
+            </form>
+        </div>
+        <br><br><br>
+    </div>
+    <br>
+    <table class="tg"><thead>
+        <tr>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "tara" .Request}}">Tara</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "oras" .Request}}">Oras</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "locatie" .Request}}">Locatie</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "data_concert" .Request}}">Data Concert</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "capacitate" .Request}}">Capacitate</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "bilete_vandute" .Request}}">Bilete Vandute</a></th>
+            <th class="tg-m5yy">Actiuni</th>
+        </tr></thead>
+        <tbody>
+            {{ range .Data}}
+            <tr>
+                <td class="tg-0lax">{{ .Tara }}</td>
+                <td class="tg-0lax">{{ .Oras }}</td>
+                <td class="tg-0lax">{{ .Locatie }}</td>
+                <td class="tg-0lax">{{ .DataConcert }}</td>
+                <td class="tg-0lax">{{ .Capacitate }}</td>
+                <td class="tg-0lax">{{ .BileteVandute }}</td>
+                <td class="tg-0lax"><a href="/turneu?id={{ getQueryParam "id" $.Request }}&concert_id={{ .IdConcert }}&action=edit">Edit</a> | <a href="/turneu?id={{ getQueryParam "id" $.Request }}&concert_id={{ .IdConcert }}&action=delete">Delete</a> | <a href="/turneu?id={{ getQueryParam "id" $.Request }}&concert_id={{ .IdConcert }}&action=vinde_bilet">Vinde Bilet</a></td>                
+            </tr>
+        {{ end }}
+        </tbody>
+        
+    </table>
+    <br>
+    <br>
+    <div class="center" style="margin-left: auto; margin-right: auto;border: black 1px dashed;">
+        {{ $action:=getQueryParam "action" .Request}}
+        <form name="edit">
+            {{ if and (eq $action "edit") (getQueryParam "concert_id" $.Request) }}
+                <input type="hidden" name="concert_id" value="{{ getQueryParam "concert_id" .Request }}" />
+            {{end}}
+            <input type="hidden" name="id" value="{{ getQueryParam "id" .Request }}" />
+            <input type="hidden" name="exec" value="edit" />
+            <input type="text" style="width: 250px;" name="tara" placeholder="Tara" value="{{ if .Edit  }} {{.Edit.Tara}} {{ end}}"><br>
+            <input type="text" style="width: 250px;" name="oras" placeholder="Oras" value="{{ if .Edit  }} {{.Edit.Oras}} {{ end}}"><br>
+            <input type="text" style="width: 250px;" name="locatie" placeholder="Locatie" value="{{ if .Edit  }} {{.Edit.Locatie}} {{ end}}"><br>
+            <input type="text" style="width: 250px;" name="data_concert" placeholder="Data Concert (%Y-%m-%d)" value="{{ if .Edit  }} {{.Edit.DataConcert}} {{ end}}"><br>
+            <input type="text" style="width: 250px;" name="capacitate" placeholder="Capacitate" value="{{ if .Edit  }} {{.Edit.Capacitate}} {{ end}}"><br>
+            <button type="submit">
+                {{ if and (eq $action "edit") (getQueryParam "concert_id" $.Request) }} salveaza {{ else }} adauga {{ end }}
+            </button>
+        </form>
+    </div>    
+    <br>
+    <br>
+
+    {{ if eq (getQueryParam "action" .Request) "vinde_bilet" }}
+        <div class="center" style="margin-left: auto; margin-right: auto; border: black 1px dashed;">
+            Vinde bilet<br><br>
+            {{ $action:=getQueryParam "action" .Request}}
+            <form name="vinde_bilete">
+                <input type="hidden" name="concert_id" value="{{ getQueryParam "concert_id" .Request }}" />
+                <input type="hidden" name="id" value="{{ getQueryParam "id" .Request }}" />
+                <input type="hidden" name="exec" value="vinde_bilete" />
+                Tip bilet: <select name="tip_bilet">
+                    <option>GA</option>
+                    <option>VIP</option>
+                    <option>BP</option>
+                    <option>FS</option>
+                </select>
+                <br>
+                Aloca fan: <select name="id_fan">
+                    <option selected>none</option>
+                    {{ range .Fani}}
+                        <option value="{{ .IdFan }}">{{ .Fan }}</option>
+                    {{ end }}
+                </select>
+                <br>
+                <input type="text" style="width: 250px;" name="pret_bilet" placeholder="Pret bilet"><br>
+                <br><br><br>
+                <button type="submit">vinde</button>
+            </form>
+        </div>    
+        <br>
+        <br>
+    {{ end }}
+    Executed SQL query:
+    <pre class="prettyprint">
+        {{ .Query }}
+    </pre>
+</body>

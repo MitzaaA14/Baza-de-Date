@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+    <title>turneu</title>
+</head>
+<body>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+    <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-m5yy{background-color:#96fffb;border-color:#00d2cb;font-weight:bold;text-align:left;vertical-align:top}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
+    .center { text-align: center; }
+    </style>
+    <div class="center">
+        <a href="/" class="center">index</a>
+        <br><br><br>
+        <div style="margin-left: auto; margin-right: auto;">
+            <form>
+                <input type="text" name="cautare" placeholder="introdu text cautat" value="{{ getQueryParam "cautare" .Request }}"><br>
+                <button type="submit">cautare</button>
+            </form>
+        </div>
+        <br><br><br>
+    </div>
+
+    {{ if .Data }}
+
+    <table class="tg"><thead>
+        <tr>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "t.nume_turneu" .Request}}">Turneu</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "c.tara" .Request}}">Tara</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "c.oras" .Request}}">Oras</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "c.locatie" .Request}}">Locatie</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "c.data_concert" .Request}}">Data Concert</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "p.titlu" .Request}}">Piesa</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "p.durata" .Request}}">Durata</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "p.compozitor" .Request}}">Compozitor</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "p.link_piesa" .Request}}">Link Piesa</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "a.titlu" .Request}}">Album</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "a.gen" .Request}}">Gen</a></th>
+            <th class="tg-m5yy"><a href="{{ paramGetToggleOrder "a.casa_de_discuri" .Request}}">Casa de discuri</a></th>
+        </tr></thead>
+        <tbody>
+        {{ range .Data}}
+            <tr>
+            <td class="tg-0lax">{{ .NumeTurneu }}</td>
+            <td class="tg-0lax">{{ .Tara }}</td>
+            <td class="tg-0lax">{{ .Oras }}</td>
+            <td class="tg-0lax">{{ .Locatie }}</td>
+            <td class="tg-0lax">{{ .DataConcert }}</td>
+            <td class="tg-0lax">{{ .PiesaTitlu }}</td>
+            <td class="tg-0lax">{{ .PiesaDurata }}</td>
+            <td class="tg-0lax">{{ .PiesaCompozitor }}</td>
+            <td class="tg-0lax"><a href="{{ .PiesaLink }}" target="_blank">{{ .PiesaLink }}</a></td>
+            <td class="tg-0lax">{{ .AlbumTitlu }}</td>
+            <td class="tg-0lax">{{ .AlbumGen }}</td>
+            <td class="tg-0lax">{{ .AlbumCasaDeDiscuri }}</td>
+            </tr>
+        {{ end }}
+        </tbody>
+        
+    </table>
+    {{ end }}
+    <br>
+    <br>
+    Executed SQL query:
+    <pre class="prettyprint">
+        {{ .Query }}
+    </pre>    
+</body>
